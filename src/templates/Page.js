@@ -1,9 +1,8 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql, Link } from "gatsby"
-import { getMenu } from "silverstripe-gatsby-helpers"
-import Header from "./header"
-import Logo from "../components/logo"
+import logo from '../images/ss-logo.png';
+import MainNav from '../components/mainNav';
 
 import "../scss/app.scss"
 
@@ -14,44 +13,34 @@ const Page = ({ children }) => {
 			SilverStripeSiteConfig {
 				title
 			}
-  		}	
+		  }
+		  	
 	}
   `);
   const { title } = data.silverStripeDataObject.SilverStripeSiteConfig;
 
-  const menuItems = getMenu(1);
-
   return (
-    <>
-      <div className="topBar">
-      	<div className="logo">
-      		<Logo />
-      	</div>
-      	<navbar className="mainNav">
-      		<nav>
-			      <ul>
-			      {menuItems.map(item => {
-			      	return (
-			      		<li key={item.id}>
-			      			<Link to={item.link}>
-			      				{item.SilverStripeSiteTree.menuTitle}
-			      			</Link>
-			      		</li>
-			      	)
-			      })}
-			      </ul>
-      		</nav>
-      	</navbar>
-      </div>
-        <main>{children}</main>
+    <div className="wrap">
+		<div className="topBar">
+			<div className="logo">
+				<Link to="/">
+					<img src={logo} alt="Silverstripe CMS"/>
+					<h1>{title}</h1>
+				</Link>
+			</div>
+			<MainNav />
+		</div>
+
+    	<main>{children}</main>
         <footer>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.org">Gatsby</a>
-          and 
-          <a href="https://www.silverstripe.org">Silverstripe CMS"</a>
+			<div>
+          	© {new Date().getFullYear()}. 
+			  Built with <a href="https://www.gatsbyjs.org">Gatsby</a> and
+			  {` `} 
+			  <a href="https://www.silverstripe.org">Silverstripe CMS"</a>
+		  	</div>
         </footer>
-    </>
+    </div>
   )
 }
 
