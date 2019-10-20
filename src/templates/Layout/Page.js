@@ -2,7 +2,7 @@ import React from "react"
 import { graphql } from "gatsby"
 import { getChildren, isLevel, getMenu } from "silverstripe-gatsby-helpers"
 import Layout from "../Page"
-import SEO from "../../components/SEO"
+import SEOTags from "../../components/SEOTags"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import { Link } from "gatsby"
 import classnames from 'classnames';
@@ -16,7 +16,7 @@ const Page = ({ data: { silverStripeDataObject }}) => {
 	
 	return (
 	  <Layout>
-	    <SEO pageTitle={title} />
+	    <SEOTags pageTitle={title} />
 
 		<div className={`content ${hasSubnav ? 'hasSidebar' : ''}`}>
 			<div className="main">
