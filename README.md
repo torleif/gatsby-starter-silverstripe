@@ -1,97 +1,289 @@
-<!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
-<p align="center">
-  <a href="https://www.gatsbyjs.org">
-    <img alt="Gatsby" src="https://www.gatsbyjs.org/monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Gatsby's default starter
-</h1>
+# Gatsby Starter for Silverstripe CMS
 
-Kick off your project with this default boilerplate. This starter ships with the main Gatsby configuration files you might need to get up and running blazing fast with the blazing fast app generator for React.
+This starter can be used for sites that source their data primarily from [Silverstripe CMS](https://github.com/silverstripe/silverstripe-installer).
 
-_Have another more specific idea? You may want to check out our vibrant collection of [official and community-created starters](https://www.gatsbyjs.org/docs/gatsby-starters/)._
+## Installation
 
-## 🚀 Quick start
+`$ gatsby new my-ss-project https://github.com/unclecheese/gatsby-starter-silverstripe`
 
-1.  **Create a Gatsby site.**
+### Dependencies
 
-    Use the Gatsby CLI to create a new site, specifying the default starter.
+* [gatsby-source-silverstripe](https://github.com/silverstripe/gatsby-source-silverstripe)
+* [silverstripe-gatsby-helpers](https://github.com/silverstripe/silverstripe-gatsby-helpers)
 
-    ```shell
-    # create a new Gatsby site using the default starter
-    gatsby new my-default-starter https://github.com/gatsbyjs/gatsby-starter-default
-    ```
 
-1.  **Start developing.**
+### Getting started
 
-    Navigate into your new site’s directory and start it up.
+You will need to install the following package on your Silverstripe site to expose your data to Gatsby:
 
-    ```shell
-    cd my-default-starter/
-    gatsby develop
-    ```
+`$ composer require silverstripe/silverstripe-gatsby`
 
-1.  **Open the source code and start editing!**
+Once that is installed, ensure the `__gatsby/graphql` endpoing is working on your Silverstripe site.
 
-    Your site is now running at `http://localhost:8000`!
+Now, edit the `gatsby-config.js` file, and add the host of your Silverstripe backend to the `options.host` node in the plugin config.
+```js
+    {
+    	resolve: `gatsby-source-silverstripe`,
+    	options: {
+    		host: `http://my-silverstripe-cms.local`
+    	}
+    },
+```
 
-    _Note: You'll also see a second link: _`http://localhost:8000/___graphql`_. This is a tool you can use to experiment with querying your data. Learn more about using this tool in the [Gatsby tutorial](https://www.gatsbyjs.org/tutorial/part-five/#introducing-graphiql)._
+Now, run `gatsby develop`. When the build is complete, you should have your entire site built out, with primary and secondary navigation,
+in a primitive template.
 
-    Open the `my-default-starter` directory in your code editor of choice and edit `src/pages/index.js`. Save your changes and the browser will update in real time!
+<img src="https://user-images.githubusercontent.com/654636/67168179-2d5fb300-f3fe-11e9-9b25-afdf544a1b59.png">
 
-## 🧐 What's inside?
+#### Error: SiteConfig not found?
 
-A quick look at the top-level files and directories you'll see in a Gatsby project.
+This starter relies on `SiteConfig` to provide some basic information. By default, `SiteConfig` has a `canView()` that returns false for unauthenticated users, meaning it won't be present in your schema.
 
-    .
-    ├── node_modules
-    ├── src
-    ├── .gitignore
-    ├── .prettierrc
-    ├── gatsby-browser.js
-    ├── gatsby-config.js
-    ├── gatsby-node.js
-    ├── gatsby-ssr.js
-    ├── LICENSE
-    ├── package-lock.json
-    ├── package.json
-    └── README.md
+The `gatsby-source-silverstripe` plugin will support token-based auth in the future, but until then, you probably want to turn off `filter_can_view` in your Silverstripe site:
 
-1.  **`/node_modules`**: This directory contains all of the modules of code that your project depends on (npm packages) are automatically installed.
+```yaml
+SilverStripe\Gatsby\GraphQL\Types\SyncResultTypeCreator:
+  filter_can_view: false
+```
 
-2.  **`/src`**: This directory will contain all of the code related to what you will see on the front-end of your site (what you see in the browser) such as your site header or a page template. `src` is a convention for “source code”.
+## Features
 
-3.  **`.gitignore`**: This file tells git which files it should not track / not maintain a version history for.
+This starter provides several features that aim to maintain a high level of parity between your Gatsby project and Silverstripe
+in order to ease migration pain and flatten the learning curve.
 
-4.  **`.prettierrc`**: This is a configuration file for [Prettier](https://prettier.io/). Prettier is a tool to help keep the formatting of your code consistent.
+### Automatic site tree generation
 
-5.  **`gatsby-browser.js`**: This file is where Gatsby expects to find any usage of the [Gatsby browser APIs](https://www.gatsbyjs.org/docs/browser-apis/) (if any). These allow customization/extension of default Gatsby settings affecting the browser.
+Any dataobject exposed by your Silverstripe backend that has a `Link()` method will get its own page in your Gatsby site,
+whether it's a SiteTree or DataObject.
 
-6.  **`gatsby-config.js`**: This is the main configuration file for a Gatsby site. This is where you can specify information about your site (metadata) like the site title and description, which Gatsby plugins you’d like to include, etc. (Check out the [config docs](https://www.gatsbyjs.org/docs/gatsby-config/) for more detail).
+By default, a `templates/Layout/Page.js` is provided, which should resolve all your SiteTree records.
 
-7.  **`gatsby-node.js`**: This file is where Gatsby expects to find any usage of the [Gatsby Node APIs](https://www.gatsbyjs.org/docs/node-apis/) (if any). These allow customization/extension of default Gatsby settings affecting pieces of the site build process.
+### Template selection
 
-8.  **`gatsby-ssr.js`**: This file is where Gatsby expects to find any usage of the [Gatsby server-side rendering APIs](https://www.gatsbyjs.org/docs/ssr-apis/) (if any). These allow customization of default Gatsby settings affecting server-side rendering.
+Template selection works the same way as Silverstripe.
 
-9.  **`LICENSE`**: Gatsby is licensed under the MIT license.
+#### Example 
 
-10. **`package-lock.json`** (See `package.json` below, first). This is an automatically generated file based on the exact versions of your npm dependencies that were installed for your project. **(You won’t change this file directly).**
+**Template inventory**:
 
-11. **`package.json`**: A manifest file for Node.js projects, which includes things like metadata (the project’s name, author, etc). This manifest is how npm knows which packages to install for your project.
+```
+src/
+  templates/
+    Page.js
+    Layout/
+      NewsPage.js
+      Page.js
+```      
 
-12. **`README.md`**: A text file containing useful reference information about your project.
+* `NewsPage extends Page` => `src/templates/Layout/NewsPage.js` (match)
+* `ContactPage extends Page` => `src/templates/Layout/Page.js` (resolves to parent class)
+* `StaffMember extends DataObject` => NOT FOUND (Please create a `Layout/StaffMember.js` file)
 
-## 🎓 Learning Gatsby
+### Helper components
 
-Looking for more guidance? Full documentation for Gatsby lives [on the website](https://www.gatsbyjs.org/). Here are some places to start:
+The starter ships with some basic components to help with common template needs. You're free to customise these as you see fit.
 
-- **For most developers, we recommend starting with our [in-depth tutorial for creating a site with Gatsby](https://www.gatsbyjs.org/tutorial/).** It starts with zero assumptions about your level of ability and walks through every step of the process.
+* `<MainNav />`
+* `<Breadcrumbs />`
+* `<SEOTags />`
 
-- **To dive straight into code samples, head [to our documentation](https://www.gatsbyjs.org/docs/).** In particular, check out the _Guides_, _API Reference_, and _Advanced Tutorials_ sections in the sidebar.
+### Forms
 
-## 💫 Deploy
+You can query forms as data, as they are provided by `silverstripe/silverstripe-gatsby` using the [silverstripe-graphql-forms](https://github.com/unclecheese/silverstripe-graphql-forms) module. You will need to expose these forms to your GraphQL API on your Silverstripe site.
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-default)
+```yaml
+UncleCheese\GraphQLForms\FormQueryCreator:
+  registered_forms:
+    ## Expose a form that is generated by a method on a controller
+    ContactForm: 'MyProject\Pages\ContactPageController.ContactForm'
+    ## Expose a UserDefinedForm by ID
+    MyUserDefinedForm: 45
+```
 
-<!-- AUTO-GENERATED-CONTENT:END -->
+Then, you can extract the form data using helpers, and render the form out with a library like [formik](https://github.com/jaredpalmer/formik).
+
+```js
+import React from 'react';
+import { extractFormData } from 'silverstripe-gatsby-helpers';
+
+const MyFormPage = ({ data: { silverStripeDataObject, silverStripeForm } }) => {
+  const { title, content } = silverStripeDataObject.SilverStripeSiteTree;
+  const {
+    initialValues,
+    fields,
+    actions,
+    validator,
+    attributes
+  } = extractFormData(silverStripeForm);
+
+  // Render form
+};
+```
+
+See full example below.
+
+### Elemental support
+
+Coming soon.
+
+## Example code
+
+### Primary navigation
+
+```js
+import React from 'react';
+import classnames from 'classnames';
+import { getMenu } from 'silverstripe-gatsby-helpers';
+import { Link } from 'gatsby';
+
+
+const MainNav = () => {
+    const menuItems = getMenu(1);
+    return (
+        <nav className="mainNav">
+            <ul>
+            {menuItems.map(item => (
+                <li key={item.id} className={classnames({
+                    current: item.isCurrent,
+                    section: item.isSection,
+                })}>
+                    <Link to={item.link}>
+                        {item.SilverStripeSiteTree.menuTitle}
+                    </Link>
+                </li>
+            ))}
+            </ul>
+        </nav>
+    );
+};
+```
+
+### Subnavigation
+
+```js
+  import React from 'react';
+  import { getChildren, isLevel } from 'silverstripe-gatsby-helpers';
+
+  const children = getChildren();
+  const isLevel2 = isLevel(2);
+  const hasSubnav = isLevel(2) || !!children.length;
+  const navItems = isLevel2 ? getMenu(2) : children;
+
+  const MyPage = () => (
+    <div>
+    {hasSubnav &&
+      <div className="sidebar">
+        <h2>In this section</h2>
+        <ul>
+        {navItems.map(child => (
+          <li key={child.id} className={classnames({
+            current: child.isCurrent,
+          })}>
+          <Link to={child.link}>{child.SilverStripeSiteTree.title}</Link>
+          </li>
+        ))}
+        </ul>
+      </div>
+      }
+    </div>
+  );
+```
+
+### Form Example (Formik)
+```js
+import React from 'react';
+import { graphql } from 'gatsby';
+import { Formik, Form, Field } from 'formik';
+import { extractFormData, SSFieldHolder } from 'silverstripe-gatsby-helpers';
+
+const renderField = fieldNode => {
+    const { Component } = fieldNode;
+    return (
+        <SSFieldHolder key={fieldNode.formFieldID} fieldNode={fieldNode}>
+            <Field component={Component} />
+        </SSFieldHolder>
+    )
+};
+
+const MyFormPage = ({ data: { silverStripeForm } }) => {
+    const {
+        initialValues,
+        fields,
+        actions,
+        validator,
+        attributes
+    } = extractFormData(silverStripeForm);
+
+
+
+    return (
+    <div>
+        <h2>Form</h2>
+        <Formik
+            initialValues={initialValues}
+            validate={validator}
+            onSubmit={(values, { setSubmitting }) => {
+                setTimeout(() => {
+                alert(JSON.stringify(values, null, 2));
+                setSubmitting(false);
+                }, 400);
+            }}
+        >
+        {formik => (
+            <Form {...attributes}>
+                <fieldset>
+                {fields.map(renderField)}
+                {actions.length > 0 &&
+                	<div className="btn-toolbar">
+                        {actions.map(action => (
+                            <button key={action.formFieldID} type="submit" name={action.name} id={action.formFieldID}>
+                                {action.title}
+                            </button>
+                        ))}
+                    </div>        
+                }
+                </fieldset>
+            </Form>
+        )}
+        </Formik>      
+    </div>
+    );
+};
+
+export const pageQuery = graphql`
+    query($link: String!) {
+        silverStripeForm(formName: { eq: "ContactForm" }) {
+            attributes {
+                name
+                value
+            }
+            formFields {
+              ...SilverStripeFormFieldsFields
+              attributes {
+                  name
+                  value
+              }
+            }
+            formActions {
+              ...SilverStripeFormFieldsFields
+                attributes {
+                    name
+                    value
+                }
+            }
+        }        
+    }
+`;
+
+export default MyFormPage;
+```
+
+
+For more information, see the [silverstripe-gatsby-helpers](https://github.com/silverstripe/silverstripe-gatsby-helpers) package.
+
+
+## Magic
+
+This starter adds some hooks to your `gatsby-node.js` file to inject global state that is used by most of the helper functions
+in `silverstripe-gatsby-helpers`. (See: `SiteTreeProvider`). Due to the nature of Gatsby's `useStaticQuery`,
+this code has to be colocated with your project. It is not recommended that you edit it.
