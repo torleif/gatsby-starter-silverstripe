@@ -1,4 +1,17 @@
+const path = require('path');
 const { buildSiteTree, canonicalName } = require('gatsby-source-silverstripe');
+const LoadablePlugin = require('@loadable/webpack-plugin')
+
+exports.onCreateWebpackConfig = ({ actions }) => {
+  actions.setWebpackConfig({
+	plugins: [new LoadablePlugin()],
+	resolve: {
+		alias: {
+			'@app': path.resolve(__dirname, 'src/'),
+		},
+	}
+  })
+}
 
 exports.createPages = async ({graphql, actions, getNodesByType }) => {
 	const requiredClasses = [
