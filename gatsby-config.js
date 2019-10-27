@@ -33,7 +33,7 @@ module.exports = {
     {
     	resolve: `gatsby-source-silverstripe`,
     	options: {
-    		host: ``
+    		host: `http://gatsby-cms.local`
     	}
     },
     {

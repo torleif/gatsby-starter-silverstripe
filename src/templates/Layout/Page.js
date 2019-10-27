@@ -7,8 +7,8 @@ import Breadcrumbs from "../../components/Breadcrumbs"
 import { Link } from "gatsby"
 import classnames from 'classnames';
 
-const Page = ({ data: { silverStripeDataObject }}) => {
-	const { title, content } = silverStripeDataObject.SilverStripeSiteTree;
+const Page = ({ data: { ssPage } }) => {
+	const { title, content } = ssPage;
 	const children = getChildren();
 	const isLevel2 = isLevel(2);
 	const hasSubnav = isLevel(2) || !!children.length;
@@ -34,7 +34,7 @@ const Page = ({ data: { silverStripeDataObject }}) => {
 						<li key={child.id} className={classnames({
 							current: child.isCurrent,
 						})}>
-							<Link to={child.link}>{child.SilverStripeSiteTree.title}</Link>
+							<Link to={child.link}>{child.SiteTree.title}</Link>
 						</li>
 					))}
 					</ul>
@@ -49,11 +49,9 @@ export default Page
 
 export const pageQuery = graphql`
 	query ($link: String!) {
-		silverStripeDataObject(link: { eq: $link }) {
-			SilverStripeSiteTree {
-				title
-				content
-			}
+		ssPage(link: { eq: $link }) {
+			title
+			content
 		}
 
 	}

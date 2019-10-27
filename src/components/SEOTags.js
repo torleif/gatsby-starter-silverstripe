@@ -6,16 +6,13 @@ import { useStaticQuery, graphql } from "gatsby"
 const SEOTags = ({ metaDescription, lang, meta, pageTitle }) => {
   const data = useStaticQuery(
     graphql`
-      {
-        silverStripeDataObject(className: { eq: "SilverStripe__SiteConfig__SiteConfig"}) {
-          SilverStripeSiteConfig {
-            title
-          }
-        }	
+    {
+      ssSiteConfig {
+        title
       }
-  `);
-  const siteTitle = data.silverStripeDataObject.SilverStripeSiteConfig.title;
-
+    }  
+    `);
+  const siteTitle = data.ssSiteConfig.title;
 
   return (
     <Helmet

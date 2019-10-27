@@ -4,11 +4,20 @@ import { initHierarchy } from "silverstripe-gatsby-helpers"
 const SiteTreeProvider = ({ children }) => {
     const hierarchy = useStaticQuery(graphql`
         {
-            allSilverStripeDataObject {
+            allSsDataObject {
                 nodes {
-                    ...CoreFields
-                    SilverStripeSiteTree {
-                        ...SilverStripeSiteTreeFields
+                    id
+                    uuid
+                    parentUUID
+                    ancestry
+                    link
+                    silverstripe_id
+                    className
+                    SiteTree {
+                        title
+                        menuTitle
+                        showInMenus
+                        sort
                     }
                 }
             }

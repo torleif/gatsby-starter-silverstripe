@@ -14,16 +14,16 @@ exports.onCreateWebpackConfig = ({ actions }) => {
 }
 
 exports.createPages = async ({graphql, actions, getNodesByType }) => {
-	const requiredClasses = [
-		"SilverStripe\\CMS\\Model\\SiteTree",
-		"SilverStripe\\SiteConfig\\SiteConfig",
+	const requiredTypes = [
+		"SSSiteTree",
+		"SSSiteConfig",
 	];
 	const errors = [];
-	requiredClasses.forEach(type => {
-		const exists = getNodesByType('SilverStripeDataObject').find(node => node.ancestry.includes(type));
+	requiredTypes.forEach(type => {
+		const exists = !!getNodesByType(type).length;
 		if (!exists) {
 			errors.push(
-				`Required dataobject "${canonicalName(type)}" is missing from the schema. Cannot build site tree.
+				`Required type "${type}" is missing from the schema. Cannot build site tree.
 				Check your canView permissions?`
 			);
 		}

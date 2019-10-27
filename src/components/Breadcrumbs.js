@@ -8,7 +8,7 @@ const Breadcrumbs = ({ maxDepth, showHidden }) => (
         <>
             {i > 0 && ` / `}
             <Link key={crumb.uuid} to={crumb.link}>
-                {crumb.SilverStripeSiteTree.menuTitle}
+                {crumb.SiteTree.menuTitle}
             </Link>
         </>
     ))}

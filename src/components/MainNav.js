@@ -14,7 +14,7 @@ const MainNav = () => {
                     section: item.isSection,
                 })}>
                     <Link to={item.link}>
-                        {item.SilverStripeSiteTree.menuTitle}
+                        {item.SiteTree.menuTitle}
                     </Link>
                 </li>
             ))}

@@ -6,18 +6,15 @@ import MainNav from '../components/mainNav';
 
 import "../scss/app.scss"
 
-const Page = ({ children }) => {
+const Page = ({ children }) => {	
   const data = useStaticQuery(graphql`
 	{
-		silverStripeDataObject(className: { eq: "SilverStripe__SiteConfig__SiteConfig"}) {
-			SilverStripeSiteConfig {
-				title
-			}
-		  }
-		  	
+		ssSiteConfig {
+			title
+		}		  	
 	}
   `);
-  const { title } = data.silverStripeDataObject.SilverStripeSiteConfig;
+  const { title } = data.ssSiteConfig;
 
   return (
     <div className="wrap">
