@@ -37,7 +37,7 @@ const Page = ({ children }) => {
           	© {new Date().getFullYear()}. 
 			  Built with <a href="https://www.gatsbyjs.org">Gatsby</a> and
 			  {` `} 
-			  <a href="https://www.silverstripe.org">Silverstripe CMS"</a>
+			  <a href="https://www.silverstripe.org">Silverstripe CMS</a>
 		  	</div>
         </footer>
     </div>
